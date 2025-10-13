@@ -814,25 +814,25 @@ components:
         difficulty:
           $ref: "#/components/schemas/QuestionDifficulty"
         options:
-          type: object
-          properties:
-            type:
-              type: string
-              enum: [text, image]
-              description: 选项类型
-            text:
-              type: string
-              description: 选项文本
-            image:
-              type: string
-              format: uri
-              description: 选项图片URL
-          required:
-            - type
-          example: ["Venti", "Zhongli", "Raiden Shogun", "Nahida"]
+          type: array
+          items:
+            $ref: "#/components/schemas/QuestionOption"
         explanation:
           type: string
           example: "Venti is the Anemo Archon, also known as Barbatos"
+        languages:
+          type: array
+          items:
+            type: string
+          example: ["en", "zh", "jp"]
+        answer_count:
+          type: integer
+          example: 150
+          description: 总答题人数
+        correct_count:
+          type: integer
+          example: 100
+          description: 总答对人数
         created_by:
           type: string
           format: uuid
@@ -848,8 +848,28 @@ components:
         - category
         - difficulty
         - options
+        - languages
         - created_by
         - created_at
+
+    QuestionOption:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [text, image]
+          description: 选项类型
+        text:
+          type: string
+          description: 选项文本
+        image:
+          type: string
+          format: uri
+          description: 选项图片URL
+      required: [id, type]
 
     QuestionWithAnswer:
       allOf:
