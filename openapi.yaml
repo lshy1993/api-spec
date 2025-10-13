@@ -513,7 +513,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-    /votes:
+  /votes:
     post:
       summary: 创建投票
       operationId: createVote
@@ -522,20 +522,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Vote'
+              $ref: "#/components/schemas/Vote"
       responses:
-        '201':
+        "201":
           description: 投票创建成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Vote'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/Vote"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
     get:
       summary: 获取投票列表
       operationId: getVotes
@@ -554,7 +554,7 @@ paths:
             minimum: 0
             default: 0
       responses:
-        '200':
+        "200":
           description: 投票列表
           content:
             application/json:
@@ -564,16 +564,16 @@ paths:
                   votes:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Vote'
+                      $ref: "#/components/schemas/Vote"
                   total:
                     type: integer
                   limit:
                     type: integer
                   offset:
                     type: integer
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /votes/{id}:
     get:
       summary: 获取投票详情（含当前结果）
@@ -586,18 +586,19 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: 投票详情
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Vote'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/Vote"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /votes/{id}/vote:
     post:
       summary: 投票
@@ -627,16 +628,16 @@ paths:
               required:
                 - option_ids
       responses:
-        '200':
+        "200":
           description: 投票成功
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
 components:
   schemas:
@@ -925,8 +926,6 @@ components:
         - error
         - message
         - code
-
-
 
   responses:
     BadRequest:
