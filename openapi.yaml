@@ -17,7 +17,7 @@ paths:
   /auth/register:
     post:
       summary: Register a new user
-      operationId: registerUser
+      operationId: postRegisterUser
       requestBody:
         required: true
         content:
@@ -49,7 +49,7 @@ paths:
   /auth/login:
     post:
       summary: Login user
-      operationId: loginUser
+      operationId: postLoginUser
       requestBody:
         required: true
         content:
@@ -83,7 +83,7 @@ paths:
   /auth/forgot-password:
     post:
       summary: Request password reset
-      operationId: forgotPassword
+      operationId: postForgotPassword
       requestBody:
         required: true
         content:
@@ -285,6 +285,29 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+    post:
+      summary: Create a new question
+      operationId: postCreateQuestion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuestionWithAnswer"
+      responses:
+        "201":
+          description: Question created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuestionWithAnswer"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /questions/{id}:
     get:
       summary: Get question by ID
@@ -324,16 +347,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Question"
+              $ref: "#/components/schemas/QuestionWithAnswer"
       responses:
         "200":
           description: Question updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Question"
+                $ref: "#/components/schemas/QuestionWithAnswer"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -415,7 +440,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
     post:
       summary: Create a new exam
-      operationId: createExam
+      operationId: postCreateExam
       requestBody:
         required: true
         content:
@@ -516,7 +541,7 @@ paths:
   /votes:
     post:
       summary: 创建投票
-      operationId: createVote
+      operationId: postCreateVote
       requestBody:
         required: true
         content:
@@ -602,7 +627,7 @@ paths:
   /votes/{id}/vote:
     post:
       summary: 投票
-      operationId: vote
+      operationId: postVote
       parameters:
         - name: id
           in: path
@@ -825,6 +850,19 @@ components:
         - options
         - created_by
         - created_at
+
+    QuestionWithAnswer:
+      allOf:
+        - $ref: "#/components/schemas/Question"
+        - type: object
+          properties:
+            answer:
+              type: array
+              items:
+                type: string
+                format: uuid
+                description: 正确答案，选项ID
+          required: [answer]
 
     QuestionType:
       type: string
