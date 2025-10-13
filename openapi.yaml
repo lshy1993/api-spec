@@ -137,6 +137,134 @@ paths:
               schema:
                 type: object
                 properties:
+
+            /votes:
+              post:
+                summary: 创建投票
+                operationId: createVote
+                requestBody:
+                  required: true
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/Vote"
+                responses:
+                  "201":
+                    description: 投票创建成功
+                    content:
+                      application/json:
+                        schema:
+                          $ref: "#/components/schemas/Vote"
+                  "400":
+                    $ref: "#/components/responses/BadRequest"
+                  "401":
+                    $ref: "#/components/responses/Unauthorized"
+                  "500":
+                    $ref: "#/components/responses/InternalServerError"
+              get:
+                summary: 获取投票列表
+                operationId: getVotes
+                parameters:
+                  - name: limit
+                    in: query
+                    schema:
+                      type: integer
+                      minimum: 1
+                      maximum: 100
+                      default: 10
+                  - name: offset
+                    in: query
+                    schema:
+                      type: integer
+                      minimum: 0
+                      default: 0
+                responses:
+                  "200":
+                    description: 投票列表
+                    content:
+                      application/json:
+                        schema:
+                          type: object
+                          properties:
+                            votes:
+                              type: array
+                              items:
+                                $ref: "#/components/schemas/Vote"
+                            total:
+                              type: integer
+                            limit:
+                              type: integer
+                            offset:
+                              type: integer
+                  "500":
+                    $ref: "#/components/responses/InternalServerError"
+
+            /votes/{id}:
+              get:
+                summary: 获取投票详情（含当前结果）
+                operationId: getVote
+                parameters:
+                  - name: id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      format: uuid
+                responses:
+                  "200":
+                    description: 投票详情
+                    content:
+                      application/json:
+                        schema:
+                          $ref: "#/components/schemas/Vote"
+                  "404":
+                    $ref: "#/components/responses/NotFound"
+                  "500":
+                    $ref: "#/components/responses/InternalServerError"
+
+            /votes/{id}/vote:
+              post:
+                summary: 投票
+                operationId: vote
+                parameters:
+                  - name: id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                      format: uuid
+                requestBody:
+                  required: true
+                  content:
+                    application/json:
+                      schema:
+                        type: object
+                        properties:
+                          option_ids:
+                            type: array
+                            items:
+                              type: string
+                              format: uuid
+                            description: 用户选择的选项ID数组
+                          count:
+                            type: integer
+                            description: 用户本次投票数（如允许多票）
+                          anonymous:
+                            type: boolean
+                            description: 是否匿名投票
+                        required:
+                          - option_ids
+                responses:
+                  "200":
+                    description: 投票成功
+                  "400":
+                    $ref: "#/components/responses/BadRequest"
+                  "401":
+                    $ref: "#/components/responses/Unauthorized"
+                  "404":
+                    $ref: "#/components/responses/NotFound"
+                  "500":
+                    $ref: "#/components/responses/InternalServerError"
                   users:
                     type: array
                     items:
@@ -734,6 +862,55 @@ components:
         - medium
         - hard
       example: medium
+
+    Vote:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        created_by:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+        votes_per_user:
+          type: integer
+          default: 1
+        options:
+          type: array
+          items:
+            $ref: "#/components/schemas/VoteOption"
+      required: [id, title, created_by, options]
+
+    VoteOption:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [text, image, music]
+        text:
+          type: string
+        image_url:
+          type: string
+          format: uri
+        music_url:
+          type: string
+          format: uri
+        votes:
+          type: integer
+      required: [id, type]
 
     Error:
       type: object
