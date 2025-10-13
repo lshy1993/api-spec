@@ -8,17 +8,114 @@ info:
     email: support@genshinquiz.com
 
 servers:
-  - url: http://localhost:8080/
+  - url: http://localhost:8080
     description: Development server
-  - url: https://api.moelink.com/genshinquiz/
+  - url: https://api.moelink.com
     description: Production server
 
 paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              required:
+                - email
+                - password
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /auth/login:
+    post:
+      summary: Login user
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Invalid credentials
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /auth/forgot-password:
+    post:
+      summary: Request password reset
+      operationId: forgotPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required:
+                - email
+      responses:
+        "200":
+          description: Password reset email sent
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /users:
     get:
       summary: Get all users
       operationId: getUsers
       parameters:
+        - name: ids
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
         - name: limit
           in: query
           schema:
@@ -50,27 +147,10 @@ paths:
                     type: integer
                   offset:
                     type: integer
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
-    post:
-      summary: Create a new user
-      operationId: createUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateUserRequest"
-      responses:
-        "201":
-          description: User created successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -83,8 +163,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+            format: uuid
       responses:
         "200":
           description: User details
@@ -105,14 +185,14 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+            format: uuid
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateUserRequest"
+              $ref: "#/components/schemas/User"
       responses:
         "200":
           description: User updated successfully
@@ -122,6 +202,8 @@ paths:
                 $ref: "#/components/schemas/User"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -135,21 +217,32 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+            format: uuid
       responses:
         "204":
           description: User deleted successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /quizzes:
+  /questions:
     get:
-      summary: Get all quizzes
-      operationId: getQuizzes
+      summary: Get all questions
+      operationId: getQuestions
       parameters:
+        - name: ids
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
         - name: limit
           in: query
           schema:
@@ -166,25 +259,23 @@ paths:
         - name: category
           in: query
           schema:
-            type: string
-            enum: [characters, weapons, artifacts, lore, gameplay]
+            $ref: "#/components/schemas/QuestionCategory"
         - name: difficulty
           in: query
           schema:
-            type: string
-            enum: [easy, medium, hard]
+            $ref: "#/components/schemas/QuestionDifficulty"
       responses:
         "200":
-          description: List of quizzes
+          description: List of questions
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  quizzes:
+                  questions:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Quiz"
+                      $ref: "#/components/schemas/Question"
                   total:
                     type: integer
                   limit:
@@ -194,93 +285,229 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-    post:
-      summary: Create a new quiz
-      operationId: createQuiz
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateQuizRequest"
-      responses:
-        "201":
-          description: Quiz created successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Quiz"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
-  /quizzes/{id}:
+  /questions/{id}:
     get:
-      summary: Get quiz by ID
-      operationId: getQuiz
+      summary: Get question by ID
+      operationId: getQuestion
       parameters:
         - name: id
           in: path
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+            format: uuid
       responses:
         "200":
-          description: Quiz details
+          description: Question details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Quiz"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
-    put:
-      summary: Update quiz
-      operationId: updateQuiz
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateQuizRequest"
-      responses:
-        "200":
-          description: Quiz updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Quiz"
+                $ref: "#/components/schemas/Question"
         "400":
           $ref: "#/components/responses/BadRequest"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
-
-    delete:
-      summary: Delete quiz
-      operationId: deleteQuiz
+    put:
+      summary: Update question
+      operationId: updateQuestion
       parameters:
         - name: id
           in: path
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Question"
+      responses:
+        "200":
+          description: Question updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Question"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      summary: Delete question
+      operationId: deleteQuestion
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         "204":
-          description: Quiz deleted successfully
+          description: Question deleted successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /exams:
+    get:
+      summary: Get all exams
+      operationId: getExams
+      parameters:
+        - name: ids
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: category
+          in: query
+          schema:
+            $ref: "#/components/schemas/QuestionCategory"
+        - name: difficulty
+          in: query
+          schema:
+            $ref: "#/components/schemas/QuestionDifficulty"
+      responses:
+        "200":
+          description: List of exams
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  exams:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Exam"
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      summary: Create a new exam
+      operationId: createExam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Exam"
+      responses:
+        "201":
+          description: Exam created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exam"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /exams/{id}:
+    get:
+      summary: Get exam by ID
+      operationId: getExam
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Exam details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exam"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      summary: Update exam
+      operationId: updateExam
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Exam"
+      responses:
+        "200":
+          description: Exam updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exam"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      summary: Delete exam
+      operationId: deleteExam
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Exam deleted successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -291,123 +518,116 @@ components:
     User:
       type: object
       properties:
-        id:
-          type: integer
-          format: int64
-          example: 1
-        username:
+        uuid:
           type: string
-          example: "traveler123"
-        email:
-          type: string
-          format: email
-          example: "user@example.com"
-        display_name:
+          format: uuid
+          example: "b3b6c1e2-7e2a-4c1a-9e2a-1c2b3d4e5f6a"
+        nickname:
           type: string
           example: "Traveler"
         avatar_url:
           type: string
           format: uri
           example: "https://example.com/avatar.jpg"
-        total_score:
+        country:
+          type: string
+          example: "CN"
+        ip:
+          type: string
+          format: ipv4
+          example: "192.168.1.1"
+        total_answers:
           type: integer
-          example: 1250
-        quizzes_completed:
+          example: 100
+        correct_answers:
           type: integer
-          example: 15
-        created_at:
+          example: 80
+        questions_created:
+          type: integer
+          example: 5
+        votes:
+          type: integer
+          example: 12
+        registered_at:
           type: string
           format: date-time
           example: "2023-10-01T12:00:00Z"
-        updated_at:
+        last_login_at:
           type: string
           format: date-time
-          example: "2023-10-01T12:00:00Z"
+          example: "2023-10-10T09:00:00Z"
       required:
-        - id
-        - username
-        - email
-        - created_at
-        - updated_at
+        - uuid
+        - nickname
+        - avatar_url
+        - country
+        - ip
+        - total_answers
+        - correct_answers
+        - questions_created
+        - votes
+        - registered_at
+        - last_login_at
 
-    CreateUserRequest:
+    AuthResponse:
       type: object
       properties:
-        username:
+        token:
           type: string
-          minLength: 3
-          maxLength: 50
-          example: "traveler123"
-        email:
+          description: JWT token
+        uuid:
           type: string
-          format: email
-          example: "user@example.com"
-        display_name:
-          type: string
-          maxLength: 100
-          example: "Traveler"
-        avatar_url:
-          type: string
-          format: uri
-          example: "https://example.com/avatar.jpg"
+          format: uuid
       required:
-        - username
-        - email
+        - token
+        - uuid
 
-    UpdateUserRequest:
-      type: object
-      properties:
-        username:
-          type: string
-          minLength: 3
-          maxLength: 50
-          example: "traveler123"
-        email:
-          type: string
-          format: email
-          example: "user@example.com"
-        display_name:
-          type: string
-          maxLength: 100
-          example: "Traveler"
-        avatar_url:
-          type: string
-          format: uri
-          example: "https://example.com/avatar.jpg"
-
-    Quiz:
+    Exam:
       type: object
       properties:
         id:
-          type: integer
-          format: int64
-          example: 1
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
         title:
           type: string
-          example: "Genshin Characters Quiz"
+          example: "Genshin Characters Exam"
         description:
           type: string
           example: "Test your knowledge about Genshin Impact characters"
-        category:
-          type: string
-          enum: [characters, weapons, artifacts, lore, gameplay]
-          example: "characters"
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuestionCategory"
+          example: ["character", "lore"]
         difficulty:
-          type: string
-          enum: [easy, medium, hard]
+          $ref: "#/components/schemas/QuestionDifficulty"
           example: "medium"
         questions:
           type: array
           items:
-            $ref: "#/components/schemas/Question"
+            type: object
+            properties:
+              question_id:
+                type: string
+                format: uuid
+                description: 题目ID
+              order_index:
+                type: integer
+                description: 在本测验中的顺序
+              points:
+                type: integer
+                description: 本题分值
+            required:
+              - question_id
         time_limit:
           type: integer
           description: "Time limit in seconds"
           example: 300
         created_by:
-          type: integer
-          format: int64
-          example: 1
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
         created_at:
           type: string
           format: date-time
@@ -426,157 +646,94 @@ components:
         - created_at
         - updated_at
 
-    CreateQuizRequest:
-      type: object
-      properties:
-        title:
-          type: string
-          minLength: 1
-          maxLength: 200
-          example: "Genshin Characters Quiz"
-        description:
-          type: string
-          maxLength: 1000
-          example: "Test your knowledge about Genshin Impact characters"
-        category:
-          type: string
-          enum: [characters, weapons, artifacts, lore, gameplay]
-          example: "characters"
-        difficulty:
-          type: string
-          enum: [easy, medium, hard]
-          example: "medium"
-        questions:
-          type: array
-          items:
-            $ref: "#/components/schemas/CreateQuestionRequest"
-          minItems: 1
-        time_limit:
-          type: integer
-          minimum: 30
-          maximum: 3600
-          example: 300
-        created_by:
-          type: integer
-          format: int64
-          example: 1
-      required:
-        - title
-        - category
-        - difficulty
-        - questions
-        - created_by
-
-    UpdateQuizRequest:
-      type: object
-      properties:
-        title:
-          type: string
-          minLength: 1
-          maxLength: 200
-          example: "Genshin Characters Quiz"
-        description:
-          type: string
-          maxLength: 1000
-          example: "Test your knowledge about Genshin Impact characters"
-        category:
-          type: string
-          enum: [characters, weapons, artifacts, lore, gameplay]
-          example: "characters"
-        difficulty:
-          type: string
-          enum: [easy, medium, hard]
-          example: "medium"
-        questions:
-          type: array
-          items:
-            $ref: "#/components/schemas/CreateQuestionRequest"
-          minItems: 1
-        time_limit:
-          type: integer
-          minimum: 30
-          maximum: 3600
-          example: 300
-
     Question:
       type: object
       properties:
         id:
-          type: integer
-          format: int64
-          example: 1
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
         question_text:
           type: string
           example: "Which character is the Anemo Archon?"
         question_type:
-          type: string
-          enum: [multiple_choice, true_false, fill_in_blank]
-          example: "multiple_choice"
+          $ref: "#/components/schemas/QuestionType"
+        category:
+          $ref: "#/components/schemas/QuestionCategory"
+        difficulty:
+          $ref: "#/components/schemas/QuestionDifficulty"
         options:
-          type: array
-          items:
-            type: string
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [text, image]
+              description: 选项类型
+            text:
+              type: string
+              description: 选项文本
+            image:
+              type: string
+              format: uri
+              description: 选项图片URL
+          required:
+            - type
           example: ["Venti", "Zhongli", "Raiden Shogun", "Nahida"]
-        correct_answer:
-          type: string
-          example: "Venti"
         explanation:
           type: string
           example: "Venti is the Anemo Archon, also known as Barbatos"
-        points:
-          type: integer
-          example: 10
-        order_index:
-          type: integer
-          example: 1
+        created_by:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-10-01T12:00:00Z"
       required:
         - id
         - question_text
         - question_type
-        - correct_answer
-        - points
-        - order_index
+        - category
+        - difficulty
+        - options
+        - created_by
+        - created_at
 
-    CreateQuestionRequest:
-      type: object
-      properties:
-        question_text:
-          type: string
-          minLength: 1
-          maxLength: 500
-          example: "Which character is the Anemo Archon?"
-        question_type:
-          type: string
-          enum: [multiple_choice, true_false, fill_in_blank]
-          example: "multiple_choice"
-        options:
-          type: array
-          items:
-            type: string
-          example: ["Venti", "Zhongli", "Raiden Shogun", "Nahida"]
-        correct_answer:
-          type: string
-          minLength: 1
-          example: "Venti"
-        explanation:
-          type: string
-          maxLength: 1000
-          example: "Venti is the Anemo Archon, also known as Barbatos"
-        points:
-          type: integer
-          minimum: 1
-          maximum: 100
-          example: 10
-        order_index:
-          type: integer
-          minimum: 1
-          example: 1
-      required:
-        - question_text
-        - question_type
-        - correct_answer
-        - points
-        - order_index
+    QuestionType:
+      type: string
+      description: 题目类型
+      enum:
+        - single_choice
+        - multiple_choice
+        - true_false
+      example: single_choice
+
+    QuestionCategory:
+      type: string
+      description: 题目分类
+      enum:
+        - character
+        - weapon
+        - artifact
+        - lore
+        - gameplay
+        - world
+        - combat
+        - music
+        - statistics
+        - fun
+        - other
+      example: character
+
+    QuestionDifficulty:
+      type: string
+      description: 难度等级
+      enum:
+        - easy
+        - medium
+        - hard
+      example: medium
 
     Error:
       type: object
@@ -598,6 +755,13 @@ components:
   responses:
     BadRequest:
       description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Unauthorized:
+      description: Unauthorized
       content:
         application/json:
           schema:
