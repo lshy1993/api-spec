@@ -740,6 +740,8 @@ components:
           type: string
           format: uuid
           example: "550e8400-e29b-41d4-a716-446655440000"
+        public:
+          type: boolean
         title:
           type: string
           example: "Genshin Characters Exam"
@@ -750,7 +752,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/QuestionCategory"
-          example: ["character", "lore"]
         difficulty:
           $ref: "#/components/schemas/QuestionDifficulty"
           example: "medium"
@@ -789,6 +790,7 @@ components:
           example: "2023-10-01T12:00:00Z"
       required:
         - id
+        - public
         - title
         - category
         - difficulty
@@ -804,6 +806,8 @@ components:
           type: string
           format: uuid
           example: "550e8400-e29b-41d4-a716-446655440000"
+        public:
+          type: boolean
         question_text:
           type: string
           example: "Which character is the Anemo Archon?"
@@ -843,6 +847,7 @@ components:
           example: "2023-10-01T12:00:00Z"
       required:
         - id
+        - public
         - question_text
         - question_type
         - category
@@ -869,7 +874,9 @@ components:
           type: string
           format: uri
           description: 选项图片URL
-      required: [id, type]
+      required:
+        - id
+        - type
 
     QuestionWithAnswer:
       allOf:
@@ -882,7 +889,8 @@ components:
                 type: string
                 format: uuid
                 description: 正确答案，选项ID
-          required: [answer]
+          required:
+            - answer
 
     QuestionType:
       type: string
@@ -925,6 +933,8 @@ components:
         id:
           type: string
           format: uuid
+        public:
+          type: boolean
         title:
           type: string
         description:
@@ -938,6 +948,8 @@ components:
         expires_at:
           type: string
           format: date-time
+        expired:
+          type: boolean
         votes_per_user:
           type: integer
           default: 1
@@ -945,7 +957,18 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/VoteOption"
-      required: [id, title, created_by, options]
+        participants:
+          type: integer
+        total_votes:
+          type: integer
+      required:
+        - id
+        - public
+        - title
+        - created_by
+        - expired
+        - votes_per_user
+        - options
 
     VoteOption:
       type: object
@@ -966,7 +989,9 @@ components:
           format: uri
         votes:
           type: integer
-      required: [id, type]
+      required:
+        - id
+        - type
 
     Error:
       type: object
