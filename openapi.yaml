@@ -970,11 +970,11 @@ components:
           type: boolean
           description: "投票是否已过期"
         voted_options:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: "当前用户已投票的选项ID列表"
+          type: object
+          additionalProperties:
+            type: integer
+            description: "该选项被当前用户投了多少票"
+          description: "当前用户已投票的选项及票数，key为选项ID"
         votes_per_user:
           type: integer
           default: 1
