@@ -979,6 +979,10 @@ components:
           type: integer
           default: 1
           description: "每个用户最多可投票数"
+        votes_per_option:
+          type: integer
+          default: 1
+          description: "每个选项的最大可投票数，0表示无限制"
         options:
           type: array
           items:
@@ -1034,10 +1038,6 @@ components:
         description:
           type: string
           description: 选项描述
-        max_votes:
-          type: integer
-          default: 1
-          description: "该选项的最大可投票数，0表示无限制"
         votes:
           type: integer
       required:
