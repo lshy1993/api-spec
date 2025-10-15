@@ -808,15 +808,25 @@ components:
           example: "550e8400-e29b-41d4-a716-446655440000"
         public:
           type: boolean
-        question_text:
-          type: string
-          example: "Which character is the Anemo Archon?"
+          description: "是否公开可见"
+        solved:
+          type: boolean
+          description: "是否已经通过了"
         question_type:
           $ref: "#/components/schemas/QuestionType"
         category:
           $ref: "#/components/schemas/QuestionCategory"
         difficulty:
           $ref: "#/components/schemas/QuestionDifficulty"
+        languages:
+          type: array
+          items:
+            type: string
+          example: ["en", "zh", "jp"]
+          description: 支持的多语言列表
+        question_text:
+          type: string
+          example: "Which character is the Anemo Archon?"
         options:
           type: array
           items:
@@ -824,11 +834,12 @@ components:
         explanation:
           type: string
           example: "Venti is the Anemo Archon, also known as Barbatos"
-        languages:
+        answers:
           type: array
           items:
             type: string
-          example: ["en", "zh", "jp"]
+            format: uuid
+          description: 正确选项ID
         answer_count:
           type: integer
           example: 150
@@ -874,6 +885,9 @@ components:
           type: string
           format: uri
           description: 选项图片URL
+        count:
+          type: number
+          description: 选中次数
       required:
         - id
         - type
@@ -882,15 +896,8 @@ components:
       allOf:
         - $ref: "#/components/schemas/Question"
         - type: object
-          properties:
-            answer:
-              type: array
-              items:
-                type: string
-                format: uuid
-                description: 正确答案，选项ID
           required:
-            - answer
+            - answers
 
     QuestionType:
       type: string
