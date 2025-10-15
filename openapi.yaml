@@ -812,6 +812,10 @@ components:
         solved:
           type: boolean
           description: "是否已经通过了"
+        likeStatus:
+          type: integer
+          enum: [1, 0, -1]
+          description: "点赞状态，1=已点赞，-1=已点踩，0=未操作"
         question_type:
           $ref: "#/components/schemas/QuestionType"
         category:
@@ -848,6 +852,10 @@ components:
           type: integer
           example: 100
           description: 总答对人数
+        likes:
+          type: integer
+          example: 25
+          description: 点赞数
         created_by:
           type: string
           format: uuid
@@ -946,10 +954,13 @@ components:
           type: string
         description:
           type: string
-        created_by:
-          type: string
-          format: uuid
-        created_at:
+        category:
+          $ref: "#/components/schemas/QuestionCategory"
+        tags:
+          type: array
+          items:
+            type: string
+        start_at:
           type: string
           format: date-time
         expires_at:
@@ -957,25 +968,47 @@ components:
           format: date-time
         expired:
           type: boolean
+          description: "投票是否已过期"
+        voted_options:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: "当前用户已投票的选项ID列表"
         votes_per_user:
           type: integer
           default: 1
+          description: "每个用户最多可投票数"
         options:
           type: array
           items:
             $ref: "#/components/schemas/VoteOption"
         participants:
           type: integer
+          description: "参与投票的用户数"
         total_votes:
+          type: integer
+          description: "总投票数"
+        created_by:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        likes:
           type: integer
       required:
         - id
         - public
         - title
-        - created_by
-        - expired
+        - category
+        - start_at
         - votes_per_user
         - options
+        - expired
+        - voted_options
+        - created_at
+        - created_by
 
     VoteOption:
       type: object
@@ -986,14 +1019,21 @@ components:
         type:
           type: string
           enum: [text, image, music]
+          description: 选项类型（文本、图片、音乐）
         text:
           type: string
+          description: 选项文本
         image_url:
           type: string
           format: uri
+          description: 选项图片URL
         music_url:
           type: string
           format: uri
+          description: 选项音乐URL
+        description:
+          type: string
+          description: 选项描述
         votes:
           type: integer
       required:
