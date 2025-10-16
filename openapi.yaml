@@ -726,12 +726,11 @@ components:
         token:
           type: string
           description: JWT token
-        uuid:
-          type: string
-          format: uuid
+        user:
+          $ref: "#/components/schemas/User"
       required:
         - token
-        - uuid
+        - user
 
     Exam:
       type: object
