@@ -289,6 +289,9 @@ paths:
                       $ref: "#/components/schemas/Question"
                   total:
                     type: integer
+                required:
+                  - questions
+                  - total
         "400":
           $ref: '#/components/responses/BadRequest'
         "500":
@@ -860,12 +863,6 @@ components:
         explanation:
           type: string
           example: "Venti is the Anemo Archon, also known as Barbatos"
-        answers:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: 正确选项ID
         answer_count:
           type: integer
           example: 150
@@ -915,8 +912,11 @@ components:
           type: string
           format: uri
           description: 选项图片URL
+        is_answer:
+          type: boolean
+          description: 是否为正确答案
         count:
-          type: number
+          type: integer
           description: 选中次数
       required:
         - id
