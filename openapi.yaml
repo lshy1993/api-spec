@@ -256,7 +256,9 @@ paths:
         - name: difficulty
           in: query
           schema:
-            $ref: "#/components/schemas/QuestionDifficulty"
+            type: array
+            items:
+              $ref: "#/components/schemas/QuestionDifficulty"
         - name: query
           in: query
           schema:
@@ -293,7 +295,7 @@ paths:
                   - questions
                   - total
         "400":
-          $ref: '#/components/responses/BadRequest'
+          $ref: "#/components/responses/BadRequest"
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -572,7 +574,7 @@ paths:
           in: query
           schema:
             type: string
-            enum: ['all', 'available', 'expired']
+            enum: ["all", "available", "expired"]
         - name: query
           in: query
           schema:
