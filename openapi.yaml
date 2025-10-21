@@ -924,12 +924,56 @@ components:
         - id
         - type
 
+    QuestionTranslation:
+      type: object
+      properties:
+        question_text:
+          type: string
+          example: "What is the real name of Venti"
+        explanation:
+          type: string
+          example: "This is the explanation"
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+              is_answer:
+                type: boolean
+            example: { text: "Option A", is_answer: true }
+
     QuestionWithAnswer:
-      allOf:
-        - $ref: "#/components/schemas/Question"
-        - type: object
-          required:
-            - answers
+      type: object
+      properties:
+        public:
+          type: boolean
+        question_type:
+          $ref: "#/components/schemas/QuestionType"
+        category:
+          $ref: "#/components/schemas/QuestionCategory"
+        difficulty:
+          $ref: "#/components/schemas/QuestionDifficulty"
+        translations:
+          type: array
+          items:
+            type: object
+            properties:
+              language:
+                type: string
+              test:
+                $ref: "#/components/schemas/QuestionTranslation"
+
+      required:
+        [
+          "public",
+          "question_type",
+          "category",
+          "difficulty",
+          "question_text",
+          "options",
+        ]
 
     QuestionType:
       type: string
