@@ -943,6 +943,8 @@ components:
               is_answer:
                 type: boolean
             example: { text: "Option A", is_answer: true }
+            required: ["text", "is_answer"]
+      required: ["question_text", "explanation", "options"]
 
     QuestionWithAnswer:
       type: object
@@ -962,9 +964,9 @@ components:
             properties:
               language:
                 type: string
-              test:
+              text:
                 $ref: "#/components/schemas/QuestionTranslation"
-
+            required: ["language", "text"]
       required:
         [
           "public",
@@ -973,6 +975,7 @@ components:
           "difficulty",
           "question_text",
           "options",
+          "translations",
         ]
 
     QuestionType:
