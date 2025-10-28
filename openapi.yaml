@@ -711,6 +711,9 @@ components:
         country:
           type: string
           example: "CN"
+        language:
+          type: string
+          example: "zh"
         ip:
           type: string
           format: ipv4
@@ -908,8 +911,10 @@ components:
           enum: [text, image]
           description: 选项类型
         text:
-          type: string
+          type: object
           description: 选项文本
+          additionalProperties:
+            type: string
         image:
           type: string
           format: uri
@@ -924,28 +929,6 @@ components:
         - id
         - type
 
-    QuestionTranslation:
-      type: object
-      properties:
-        question_text:
-          type: string
-          example: "What is the real name of Venti"
-        explanation:
-          type: string
-          example: "This is the explanation"
-        options:
-          type: array
-          items:
-            type: object
-            properties:
-              text:
-                type: string
-              is_answer:
-                type: boolean
-            example: { text: "Option A", is_answer: true }
-            required: ["text", "is_answer"]
-      required: ["question_text", "explanation", "options"]
-
     QuestionWithAnswer:
       type: object
       properties:
@@ -957,16 +940,21 @@ components:
           $ref: "#/components/schemas/QuestionCategory"
         difficulty:
           $ref: "#/components/schemas/QuestionDifficulty"
-        translations:
+        options:
           type: array
           items:
-            type: object
-            properties:
-              language:
-                type: string
-              text:
-                $ref: "#/components/schemas/QuestionTranslation"
-            required: ["language", "text"]
+            $ref: "#/components/schemas/QuestionOption"
+          description: 问题的选项
+        question_text:
+          type: object
+          description: 多语言题干
+          additionalProperties:
+            type: string
+        explanation:
+          type: object
+          description: 多语言解释
+          additionalProperties:
+            type: string
       required:
         [
           "public",
