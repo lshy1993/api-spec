@@ -164,10 +164,9 @@ paths:
                       $ref: "#/components/schemas/User"
                   total:
                     type: integer
-                  limit:
-                    type: integer
-                  offset:
-                    type: integer
+                required:
+                  - users
+                  - total
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
