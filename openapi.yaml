@@ -31,6 +31,9 @@ paths:
                 password:
                   type: string
                   format: password
+                language:
+                  type: string
+                  description: Preferred language code (e.g., "en", "zh")
               required:
                 - email
                 - password
