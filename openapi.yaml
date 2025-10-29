@@ -926,7 +926,6 @@ components:
           type: integer
           description: 选中次数
       required:
-        - id
         - type
 
     QuestionWithAnswer:
