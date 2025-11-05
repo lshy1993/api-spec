@@ -471,6 +471,45 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /questions/{id}/like:
+    post:
+      summary: Like or dislike a question
+      description: Submit user's answer for a specific question and get result
+      operationId: postLikeQuestion
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Question ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                like:
+                  type: integer
+                  enum: [1, 0, -1]
+                  description: "点赞状态：1=点赞，0=取消操作，-1=点踩"
+              required:
+                - like
+      responses:
+        "201":
+          description: Like/dislike submitted successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+
   /questions/{id}/submissions:
     get:
       summary: Get submissions for a question
