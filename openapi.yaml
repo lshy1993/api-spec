@@ -462,6 +462,8 @@ paths:
                 properties:
                   correct:
                     type: boolean
+                required:
+                  - correct
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -508,7 +510,6 @@ paths:
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
-
 
   /questions/{id}/submissions:
     get:
