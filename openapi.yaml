@@ -511,11 +511,42 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /questions/{id}/submissions:
+  /questions/{id}/my-answers:
     get:
-      summary: Get submissions for a question
-      description: Get recent submission records for a specific question (up to 100 records)
-      operationId: getQuestionSubmissions
+      summary: Get my submissions for a question
+      description: Get current user's submission records for a specific question (up to 100 records)
+      operationId: getQuestionMySubmissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Question ID
+      responses:
+        "200":
+          description: List of question submissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Submission"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /questions/{id}/recent:
+    get:
+      summary: Get recent submissions from other users
+      description: Get recent submission records from other users for a specific question (up to 100 records)
+      operationId: getQuestionRecentSubmissions
       parameters:
         - name: id
           in: path
