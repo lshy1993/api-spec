@@ -532,7 +532,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Submission"
+                  $ref: "#/components/schemas/MySubmission"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -563,7 +563,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Submission"
+                  $ref: "#/components/schemas/RecentSubmission"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1276,14 +1276,9 @@ components:
         - id
         - type
 
-    Submission:
+    MySubmission:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-          description: 提交记录ID
-          example: "550e8400-e29b-41d4-a716-446655440002"
         is_correct:
           type: boolean
           description: 答案是否正确
@@ -1303,12 +1298,36 @@ components:
           description: 提交时间
           example: "2023-10-01T12:00:00Z"
       required:
-        - id
         - is_correct
         - selected_option_ids
         - time_spent
         - submitted_at
-        - user
+
+    RecentSubmission:
+      type: object
+      properties:
+        user_name:
+          type: string
+          description: 提交用户昵称
+          example: "Traveler"
+        is_correct:
+          type: boolean
+          description: 答案是否正确
+          example: true
+        time_spent:
+          type: integer
+          description: 答题用时（秒）
+          example: 30
+        submitted_at:
+          type: string
+          format: date-time
+          description: 提交时间
+          example: "2023-10-01T12:00:00Z"
+      required:
+        - is_correct
+        - time_spent
+        - submitted_at
+        - user_name
 
     CommonError:
       type: object
