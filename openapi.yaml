@@ -753,6 +753,12 @@ paths:
           in: query
           schema:
             type: string
+        - name: language
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
         - name: sortBy
           in: query
           schema:
@@ -786,7 +792,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Vote"
+              $ref: "#/components/schemas/VoteWithOption"
       responses:
         "201":
           description: 投票创建成功
@@ -1195,7 +1201,7 @@ components:
         start_at:
           type: string
           format: date-time
-        expires_at:
+        expire_at:
           type: string
           format: date-time
         expired:
@@ -1275,6 +1281,51 @@ components:
       required:
         - id
         - type
+
+    VoteWithOption:
+      type: object
+      properties:
+        public:
+          type: boolean
+          description: "是否公开可见(需要密码才能参与投票)"
+        password:
+          type: string
+          description: "投票密码"
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          $ref: "#/components/schemas/QuestionCategory"
+        tags:
+          type: array
+          items:
+            type: string
+        start_at:
+          type: string
+          format: date-time
+        expire_at:
+          type: string
+          format: date-time
+        votes_per_user:
+          type: integer
+          default: 1
+          description: "每个用户最多可投票数"
+        votes_per_option:
+          type: integer
+          default: 1
+          description: "每个选项的最大可投票数，0表示无限制"
+        options:
+          type: array
+          items:
+            $ref: "#/components/schemas/VoteOption"
+      required:
+        - public
+        - title
+        - category
+        - start_at
+        - votes_per_user
+        - options
 
     MySubmission:
       type: object
