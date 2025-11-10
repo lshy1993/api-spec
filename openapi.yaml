@@ -1263,8 +1263,10 @@ components:
           enum: [text, image, music]
           description: 选项类型（文本、图片、音乐）
         text:
-          type: string
+          type: object
           description: 选项文本
+          additionalProperties:
+            type: string
         image_url:
           type: string
           format: uri
@@ -1279,7 +1281,6 @@ components:
         votes:
           type: integer
       required:
-        - id
         - type
 
     VoteWithOption:
@@ -1292,9 +1293,15 @@ components:
           type: string
           description: "投票密码"
         title:
-          type: string
+          type: object
+          description: 多语言标题
+          additionalProperties:
+            type: string
         description:
-          type: string
+          type: object
+          description: 多语言描述
+          additionalProperties:
+            type: string
         category:
           $ref: "#/components/schemas/QuestionCategory"
         tags:
