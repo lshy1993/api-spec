@@ -781,6 +781,9 @@ paths:
                       $ref: "#/components/schemas/Vote"
                   total:
                     type: integer
+                required:
+                  - votes
+                  - total
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -1189,9 +1192,15 @@ components:
         public:
           type: boolean
         title:
-          type: string
+          type: object
+          description: 多语言标题
+          additionalProperties:
+            type: string
         description:
-          type: string
+          type: object
+          description: 多语言描述
+          additionalProperties:
+            type: string
         category:
           $ref: "#/components/schemas/QuestionCategory"
         tags:
@@ -1246,6 +1255,7 @@ components:
         - category
         - start_at
         - votes_per_user
+        - votes_per_option
         - options
         - expired
         - voted_options
