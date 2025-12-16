@@ -857,19 +857,7 @@ paths:
                   type: array
                   description: "投票选项列表，每个选项可以投不同数量的票"
                   items:
-                    type: object
-                    properties:
-                      option_id:
-                        type: string
-                        format: uuid
-                        description: "选项ID"
-                      votes:
-                        type: integer
-                        minimum: 1
-                        description: "给该选项投的票数"
-                    required:
-                      - option_id
-                      - votes
+                    $ref: "#/components/schemas/VoteSubmissionOption"
                 anonymous:
                   type: boolean
                   description: "是否匿名投票"
@@ -1229,11 +1217,10 @@ components:
           type: boolean
           description: "投票是否已过期"
         voted_options:
-          type: object
-          additionalProperties:
-            type: integer
-            description: "该选项被当前用户投了多少票"
-          description: "当前用户已投票的选项及票数，key为选项ID"
+          type: array
+          description: "当前用户已投票的选项及票数"
+          items:
+            $ref: "#/components/schemas/VoteSubmissionOption"
         votes_per_user:
           type: integer
           default: 1
@@ -1409,6 +1396,22 @@ components:
         - time_spent
         - submitted_at
         - user_name
+
+    VoteSubmissionOption:
+      type: object
+      description: 投票时单个选项的投票信息
+      properties:
+        option_id:
+          type: string
+          format: uuid
+          description: 选项ID
+        votes:
+          type: integer
+          minimum: 0
+          description: 给该选项投的票数
+      required:
+        - option_id
+        - votes
 
     CommonError:
       type: object
