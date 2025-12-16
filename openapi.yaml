@@ -853,16 +853,28 @@ paths:
             schema:
               type: object
               properties:
-                option_ids:
+                options:
                   type: array
+                  description: "投票选项列表，每个选项可以投不同数量的票"
                   items:
-                    type: string
-                    format: uuid
+                    type: object
+                    properties:
+                      option_id:
+                        type: string
+                        format: uuid
+                        description: "选项ID"
+                      votes:
+                        type: integer
+                        minimum: 1
+                        description: "给该选项投的票数"
+                    required:
+                      - option_id
+                      - votes
                 anonymous:
                   type: boolean
                   description: "是否匿名投票"
               required:
-                - option_ids
+                - options
       responses:
         "200":
           description: 投票成功
@@ -1290,6 +1302,7 @@ components:
           description: 选项描述
         votes:
           type: integer
+          description: 获得的累计票数
       required:
         - type
 
