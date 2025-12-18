@@ -835,6 +835,43 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /votes/{id}/like:
+    post:
+      summary: 点赞投票
+      operationId: postLikeVote
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Question ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                like:
+                  type: integer
+                  enum: [1, 0, -1]
+                  description: "点赞状态：1=点赞，0=取消操作，-1=点踩"
+              required:
+                - like
+      responses:
+        "201":
+          description: Like/dislike submitted successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /votes/{id}/vote:
     post:
       summary: 投票
@@ -1216,6 +1253,9 @@ components:
         expired:
           type: boolean
           description: "投票是否已过期"
+        voted:
+          type: boolean
+          description: "当前用户是否已参与投票"
         voted_options:
           type: array
           description: "当前用户已投票的选项及票数"
@@ -1247,6 +1287,10 @@ components:
           format: date-time
         likes:
           type: integer
+        likeStatus:
+          type: integer
+          enum: [-1, 0, 1]
+          description: "点赞状态：-1踩, 0未操作, 1赞"
       required:
         - id
         - public
@@ -1257,6 +1301,7 @@ components:
         - votes_per_option
         - options
         - expired
+        - voted
         - voted_options
         - created_at
         - created_by
