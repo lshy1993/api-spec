@@ -624,6 +624,9 @@ paths:
                       $ref: "#/components/schemas/Exam"
                   total:
                     type: integer
+                required:
+                  - exams
+                  - total
         "500":
           $ref: "#/components/responses/InternalServerError"
     post:
