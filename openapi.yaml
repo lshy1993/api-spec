@@ -303,6 +303,12 @@ paths:
             type: array
             items:
               type: string
+        - name: created_by
+          in: query
+          description: 只返回指定用户创建的题目
+          schema:
+            type: string
+            format: uuid
         - name: sortBy
           in: query
           schema:
@@ -616,6 +622,12 @@ paths:
           in: query
           schema:
             type: string
+        - name: created_by
+          in: query
+          description: 只返回指定用户创建的测验
+          schema:
+            type: string
+            format: uuid
         - name: sortBy
           in: query
           schema:
@@ -813,6 +825,12 @@ paths:
             type: array
             items:
               type: string
+        - name: created_by
+          in: query
+          description: 只返回指定用户创建的投票
+          schema:
+            type: string
+            format: uuid
         - name: sortBy
           in: query
           schema:
