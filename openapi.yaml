@@ -150,6 +150,20 @@ paths:
             type: integer
             minimum: 0
             default: 0
+        - name: sortBy
+          in: query
+          description: >
+            排行榜排序依据。accuracy 按 Wilson 95% 置信区间下界排序（兼顾正确率与答题量，
+            公式见 User.total_answers/correct_answers 说明，total_answers=0 的用户排除在外）；
+            votes/questions_created/likes_received 均按对应字段数值直接排序。
+          schema:
+            type: string
+            enum: [accuracy, votes, questions_created, likes_received]
+        - name: sortDesc
+          in: query
+          schema:
+            type: boolean
+            default: true
       responses:
         "200":
           description: List of users
@@ -729,6 +743,43 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /exams/{id}/like:
+    post:
+      summary: 点赞测验
+      operationId: postLikeExam
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Exam ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                like:
+                  type: integer
+                  enum: [1, 0, -1]
+                  description: "点赞状态：1=点赞，0=取消操作，-1=点踩"
+              required:
+                - like
+      responses:
+        "201":
+          description: Like/dislike submitted successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /votes:
     get:
       summary: Get all votes
@@ -953,6 +1004,10 @@ components:
         votes:
           type: integer
           example: 12
+        likes_received:
+          type: integer
+          description: 该用户创建的所有题目获得的点赞总数，用于创作达人榜按点赞率排序
+          example: 42
         registered_at:
           type: string
           format: date-time
@@ -1041,6 +1096,13 @@ components:
           type: string
           format: date-time
           example: "2023-10-01T12:00:00Z"
+        likes:
+          type: integer
+          description: "点赞数"
+        likeStatus:
+          type: integer
+          enum: [-1, 0, 1]
+          description: "点赞状态：-1踩, 0未操作, 1赞"
       required:
         - id
         - public
