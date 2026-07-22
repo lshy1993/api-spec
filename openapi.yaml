@@ -125,6 +125,28 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /home:
+    get:
+      summary: Get homepage data
+      operationId: getHome
+      parameters:
+        - name: language
+          in: query
+          schema:
+            type: string
+            example: zh
+      responses:
+        "200":
+          description: Homepage data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HomePageData"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /users:
     get:
       summary: Get all users
@@ -986,6 +1008,31 @@ paths:
 
 components:
   schemas:
+    HomePageData:
+      type: object
+      properties:
+        popularExams:
+          type: array
+          items:
+            $ref: "#/components/schemas/Exam"
+        latestQuestions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Question"
+        latestVotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Vote"
+        popularVotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Vote"
+      required:
+        - popularExams
+        - latestQuestions
+        - latestVotes
+        - popularVotes
+
     User:
       type: object
       properties:
