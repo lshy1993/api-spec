@@ -107,6 +107,33 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /auth/reset-password:
+    post:
+      summary: Reset password
+      operationId: postResetPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                password:
+                  type: string
+                  format: password
+              required:
+                - token
+                - password
+      responses:
+        "200":
+          description: Password reset
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /auth/change-password:
     post:
       summary: Change password
