@@ -107,6 +107,56 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /auth/change-password:
+    post:
+      summary: Change password
+      operationId: postChangePassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                new_password:
+                  type: string
+                  format: password
+              required:
+                - token
+                - new_password
+      responses:
+        "200":
+          description: Password changed successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /auth/verify-email:
+    post:
+      summary: Verify email address
+      operationId: postVerifyEmail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+              required:
+                - token
+      responses:
+        "200":
+          description: Email verified successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /auth/me:
     get:
       summary: 获取当前用户信息
@@ -1047,16 +1097,28 @@ components:
           type: string
           format: uri
           example: "https://example.com/avatar.jpg"
+        email:
+          type: string
+          format: email
+          example: "traveler@genshin.com"
+        email_verified:
+          type: boolean
+          example: true
+        email_public:
+          type: boolean
+          example: false
+        sexuality:
+          type: string
+          enum: ["male", "female", "other"]
+        bio:
+          type: string
+          example: "A passionate Genshin Impact player."
         country:
           type: string
           example: "CN"
         language:
           type: string
           example: "zh"
-        ip:
-          type: string
-          format: ipv4
-          example: "192.168.1.1"
         total_answers:
           type: integer
           example: 100
@@ -1083,22 +1145,26 @@ components:
           example: "2023-10-10T09:00:00Z"
         registered_ip:
           type: string
-          format: ipv4
-          example: "192.168.1.1"
+          oneOf:
+            - format: ipv4
+            - format: ipv6
+          example: "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
         last_login_ip:
           type: string
-          format: ipv4
+          oneOf:
+            - format: ipv4
+            - format: ipv6
           example: "192.168.1.2"
       required:
         - uuid
         - nickname
         - avatar_url
         - country
-        - ip
         - total_answers
         - correct_answers
         - questions_created
         - votes
+        - likes_received
         - registered_at
         - last_login_at
 
