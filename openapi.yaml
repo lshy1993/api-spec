@@ -173,6 +173,30 @@ paths:
             schema:
               type: object
               properties:
+                token:
+                  type: string
+              required:
+                - token
+      responses:
+        "200":
+          description: Email verified successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /auth/send-verification-email:
+    post:
+      summary: Send verification email
+      description: Sends a email with a verification token link to the user.
+      operationId: postSendVerificationEmail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
                 email:
                   type: string
                   format: email
@@ -180,7 +204,7 @@ paths:
                 - email
       responses:
         "200":
-          description: Email verified successfully
+          description: Verification email sent successfully
         "400":
           $ref: "#/components/responses/BadRequest"
         "500":
