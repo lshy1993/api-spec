@@ -984,7 +984,7 @@ paths:
   /polls/{id}:
     get:
       summary: 获取投票详情（含当前结果）
-      operationId: getVote
+      operationId: getPoll
       parameters:
         - name: id
           in: path
@@ -1044,7 +1044,7 @@ paths:
   /polls/{id}/vote:
     post:
       summary: 投票
-      operationId: postVote
+      operationId: postVotePoll
       parameters:
         - name: id
           in: path
@@ -1134,6 +1134,12 @@ components:
         registered_at:
           type: string
           format: date-time
+      required:
+        - uuid
+        - nickname
+        - avatar_url
+        - bio
+        - registered_at
 
     UserProfile:
       type: object
@@ -1154,6 +1160,8 @@ components:
           type: string
           format: date
           example: "2010-10-10"
+      required:
+        - language
 
     UserPrivacy:
       type: object
@@ -1166,6 +1174,11 @@ components:
           $ref: "#/components/schemas/Visibility"
         country_visibility:
           $ref: "#/components/schemas/Visibility"
+      required:
+        - email_visibility
+        - birthday_visibility
+        - gender_visibility
+        - country_visibility
 
     UserStats:
       type: object
@@ -1180,6 +1193,12 @@ components:
           type: integer
         likes_received:
           type: integer
+      required:
+        - total_answers
+        - correct_answers
+        - questions_created
+        - polls_created
+        - likes_received
 
     UserPublic:
       allOf:
@@ -1193,22 +1212,22 @@ components:
         email_verified:
           type: boolean
         registered_ip:
+          type: string
           oneOf:
-            - type: string
-              format: ipv4
-            - type: string
-              format: ipv6
-          example: "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+            - format: ipv4
+            - format: ipv6
         last_login_at:
           type: string
           format: date-time
         last_login_ip:
+          type: string
           oneOf:
-            - type: string
-              format: ipv4
-            - type: string
-              format: ipv6
-          example: "192.168.1.2"
+            - format: ipv4
+            - format: ipv6
+      required:
+        - email_verified
+        - registered_ip
+        - last_login_at
 
     UserPrivate:
       allOf:
@@ -1223,6 +1242,8 @@ components:
           properties:
             is_deleted:
               type: boolean
+          required:
+            - is_deleted
 
     AuthResponse:
       type: object
@@ -1351,6 +1372,12 @@ components:
         explanation:
           $ref: "#/components/schemas/LocalizedText"
           example: "Venti is the Anemo Archon, also known as Barbatos"
+      required:
+        - public
+        - question_type
+        - category
+        - difficulty
+        - question_text
 
     Question:
       allOf:
@@ -1431,6 +1458,9 @@ components:
             selected_count:
               type: integer
               description: 选中次数
+            is_answer:
+              type: boolean
+              description: 是否为正确答案
           required:
             - id
             - count
@@ -1499,10 +1529,14 @@ components:
         - $ref: "#/components/schemas/SubmissionBase"
         - type: object
           properties:
-            user:
-              $ref: "#/components/schemas/UserPublic"
+            user_name:
+              type: string
+            user_id:
+              type: string
+              format: uuid
           required:
-            - user
+            - user_name
+            - user_id
 
     SubmissionBase:
       type: object
@@ -1585,6 +1619,12 @@ components:
                 $ref: "#/components/schemas/PollVote"
             like_status:
               $ref: "#/components/schemas/LikeStatus"
+            created_by:
+              type: string
+              format: uuid
+            created_at:
+              type: string
+              format: date-time
           required:
             - id
             - options
@@ -1593,6 +1633,8 @@ components:
             - likes_count
             - my_votes
             - like_status
+            - created_by
+            - created_at
 
     CreatePollRequest:
       allOf:
