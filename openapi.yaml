@@ -617,9 +617,7 @@ paths:
               type: object
               properties:
                 like:
-                  type: integer
-                  enum: [1, 0, -1]
-                  description: "点赞状态：1=点赞，0=取消操作，-1=点踩"
+                  $ref: "#/components/schemas/LikeStatus"
               required:
                 - like
       responses:
@@ -878,9 +876,7 @@ paths:
               type: object
               properties:
                 like:
-                  type: integer
-                  enum: [1, 0, -1]
-                  description: "点赞状态：1=点赞，0=取消操作，-1=点踩"
+                  $ref: "#/components/schemas/LikeStatus"
               required:
                 - like
       responses:
@@ -1030,9 +1026,7 @@ paths:
               type: object
               properties:
                 like:
-                  type: integer
-                  enum: [1, 0, -1]
-                  description: "点赞状态：1=点赞，0=取消操作，-1=点踩"
+                  $ref: "#/components/schemas/LikeStatus"
               required:
                 - like
       responses:
