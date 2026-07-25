@@ -220,9 +220,41 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/UserPrivate"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      summary: Update current user
+      operationId: updateUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserPrivate"
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserPrivate"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      summary: Delete current user
+      operationId: deleteUser
+      responses:
+        "204":
+          description: User deleted successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
         "500":
@@ -300,7 +332,7 @@ paths:
                   users:
                     type: array
                     items:
-                      $ref: "#/components/schemas/User"
+                      $ref: "#/components/schemas/UserPublic"
                   total:
                     type: integer
                 required:
@@ -330,61 +362,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
-    put:
-      summary: Update user
-      operationId: updateUser
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/User"
-      responses:
-        "200":
-          description: User updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
-    delete:
-      summary: Delete user
-      operationId: deleteUser
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "204":
-          description: User deleted successfully
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
+                $ref: "#/components/schemas/UserPublic"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -411,13 +389,13 @@ paths:
         - name: category
           in: query
           schema:
-            $ref: "#/components/schemas/QuestionCategory"
+            $ref: "#/components/schemas/Category"
         - name: difficulty
           in: query
           schema:
             type: array
             items:
-              $ref: "#/components/schemas/QuestionDifficulty"
+              $ref: "#/components/schemas/Difficulty"
         - name: query
           in: query
           schema:
@@ -472,14 +450,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/QuestionWithAnswer"
+              $ref: "#/components/schemas/CreateQuestionRequest"
       responses:
         "201":
           description: Question created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/QuestionWithAnswer"
+                $ref: "#/components/schemas/CreateQuestionRequest"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -526,14 +504,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/QuestionWithAnswer"
+              $ref: "#/components/schemas/CreateQuestionRequest"
       responses:
         "200":
           description: Question updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/QuestionWithAnswer"
+                $ref: "#/components/schemas/CreateQuestionRequest"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -677,7 +655,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MySubmission"
+                  $ref: "#/components/schemas/QuestionSubmission"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -738,11 +716,11 @@ paths:
         - name: category
           in: query
           schema:
-            $ref: "#/components/schemas/QuestionCategory"
+            $ref: "#/components/schemas/Category"
         - name: difficulty
           in: query
           schema:
-            $ref: "#/components/schemas/QuestionDifficulty"
+            $ref: "#/components/schemas/Difficulty"
         - name: query
           in: query
           schema:
@@ -917,10 +895,10 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /votes:
+  /polls:
     get:
-      summary: Get all votes
-      operationId: getVotes
+      summary: Get all polls
+      operationId: getPolls
       parameters:
         - name: page
           in: query
@@ -972,34 +950,34 @@ paths:
               schema:
                 type: object
                 properties:
-                  votes:
+                  polls:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Vote"
+                      $ref: "#/components/schemas/Poll"
                   total:
                     type: integer
                 required:
-                  - votes
+                  - polls
                   - total
         "500":
           $ref: "#/components/responses/InternalServerError"
 
     post:
-      summary: Create new vote
-      operationId: postCreateVote
+      summary: Create new poll
+      operationId: postCreatePoll
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/VoteWithOption"
+              $ref: "#/components/schemas/CreatePollRequest"
       responses:
         "201":
           description: 投票创建成功
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Vote"
+                $ref: "#/components/schemas/Poll"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1007,7 +985,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /votes/{id}:
+  /polls/{id}:
     get:
       summary: 获取投票详情（含当前结果）
       operationId: getVote
@@ -1024,7 +1002,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Vote"
+                $ref: "#/components/schemas/Poll"
         "400":
           $ref: "#/components/responses/BadRequest"
         "404":
@@ -1032,10 +1010,10 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /votes/{id}/like:
+  /polls/{id}/like:
     post:
       summary: 点赞投票
-      operationId: postLikeVote
+      operationId: postLikePoll
       parameters:
         - name: id
           in: path
@@ -1069,7 +1047,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-  /votes/{id}/vote:
+  /polls/{id}/vote:
     post:
       summary: 投票
       operationId: postVote
@@ -1091,7 +1069,7 @@ paths:
                   type: array
                   description: "投票选项列表，每个选项可以投不同数量的票"
                   items:
-                    $ref: "#/components/schemas/VoteSubmissionOption"
+                    $ref: "#/components/schemas/PollVote"
                 anonymous:
                   type: boolean
                   description: "是否匿名投票"
@@ -1122,21 +1100,27 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Question"
-        latestVotes:
+        latestPolls:
           type: array
           items:
-            $ref: "#/components/schemas/Vote"
-        popularVotes:
+            $ref: "#/components/schemas/Poll"
+        popularPolls:
           type: array
           items:
-            $ref: "#/components/schemas/Vote"
+            $ref: "#/components/schemas/Poll"
       required:
         - popularExams
         - latestQuestions
-        - latestVotes
-        - popularVotes
+        - latestPolls
+        - popularPolls
 
-    User:
+    Visibility:
+      type: string
+      enum:
+        - public
+        - private
+
+    UserBase:
       type: object
       properties:
         uuid:
@@ -1150,81 +1134,101 @@ components:
           type: string
           format: uri
           example: "https://example.com/avatar.jpg"
-        email:
-          type: string
-          format: email
-          example: "traveler@genshin.com"
-        email_verified:
-          type: boolean
-          example: true
-        email_public:
-          type: boolean
-          example: false
-        gender:
-          type: string
-          enum: ["male", "female", "other"]
         bio:
           type: string
           example: "A passionate Genshin Impact player."
+        registered_at:
+          type: string
+          format: date-time
+
+    UserProfile:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        gender:
+          type: string
+          enum: [unknown, male, female, other]
         country:
           type: string
           example: "CN"
         language:
           type: string
           example: "zh"
+        birthday:
+          type: string
+          format: date
+          example: "2010-10-10"
+
+    UserPrivacy:
+      type: object
+      properties:
+        email_visibility:
+          $ref: "#/components/schemas/Visibility"
+        birthday_visibility:
+          $ref: "#/components/schemas/Visibility"
+        gender_visibility:
+          $ref: "#/components/schemas/Visibility"
+        country_visibility:
+          $ref: "#/components/schemas/Visibility"
+
+    UserStats:
+      type: object
+      properties:
         total_answers:
           type: integer
-          example: 100
         correct_answers:
           type: integer
-          example: 80
         questions_created:
           type: integer
-          example: 5
-        votes:
+        polls_created:
           type: integer
-          example: 12
         likes_received:
           type: integer
-          description: 该用户创建的所有题目获得的点赞总数，用于创作达人榜按点赞率排序
-          example: 42
-        registered_at:
-          type: string
-          format: date-time
-          example: "2023-10-01T12:00:00Z"
+
+    UserPublic:
+      allOf:
+        - $ref: "#/components/schemas/UserBase"
+        - $ref: "#/components/schemas/UserProfile"
+        - $ref: "#/components/schemas/UserStats"
+
+    UserSecurity:
+      type: object
+      properties:
+        email_verified:
+          type: boolean
+        registered_ip:
+          oneOf:
+            - type: string
+              format: ipv4
+            - type: string
+              format: ipv6
+          example: "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
         last_login_at:
           type: string
           format: date-time
-          example: "2023-10-10T09:00:00Z"
-        registered_ip:
-          type: string
-          oneOf:
-            - format: ipv4
-            - format: ipv6
-          example: "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
         last_login_ip:
-          type: string
           oneOf:
-            - format: ipv4
-            - format: ipv6
+            - type: string
+              format: ipv4
+            - type: string
+              format: ipv6
           example: "192.168.1.2"
-      required:
-        - uuid
-        - nickname
-        - avatar_url
-        - country
-        - email
-        - email_verified
-        - email_public
-        - gender
-        - bio
-        - total_answers
-        - correct_answers
-        - questions_created
-        - votes
-        - likes_received
-        - registered_at
-        - last_login_at
+
+    UserPrivate:
+      allOf:
+        - $ref: "#/components/schemas/UserPublic"
+        - $ref: "#/components/schemas/UserPrivacy"
+        - $ref: "#/components/schemas/UserSecurity"
+
+    UserAdmin:
+      allOf:
+        - $ref: "#/components/schemas/UserPrivate"
+        - type: object
+          properties:
+            is_deleted:
+              type: boolean
 
     AuthResponse:
       type: object
@@ -1233,219 +1237,220 @@ components:
           type: string
           description: JWT token
         user:
-          $ref: "#/components/schemas/User"
+          $ref: "#/components/schemas/UserPrivate"
       required:
         - token
         - user
 
-    Exam:
+    LocalizedText:
+      type: object
+      description: |
+        Localized text keyed by language code.
+        Example: {"en-US": "Hello", "ja-JP": "こんにちは", "zh-CN": "你好"}
+      additionalProperties:
+        type: string
+
+    LikeStatus:
+      type: integer
+      enum: [-1, 0, -1]
+      description: "点赞状态：-1踩, 0未操作, 1赞"
+
+    ExamBase:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-          example: "550e8400-e29b-41d4-a716-446655440000"
         public:
           type: boolean
         title:
-          type: string
-          example: "Genshin Characters Exam"
+          $ref: "#/components/schemas/LocalizedText"
         description:
-          type: string
-          example: "Test your knowledge about Genshin Impact characters"
+          $ref: "#/components/schemas/LocalizedText"
         categories:
           type: array
           items:
-            $ref: "#/components/schemas/QuestionCategory"
+            $ref: "#/components/schemas/Category"
         difficulty:
-          $ref: "#/components/schemas/QuestionDifficulty"
+          $ref: "#/components/schemas/Difficulty"
           example: "medium"
-        questions:
-          type: array
-          items:
-            type: object
-            properties:
-              question_id:
-                type: string
-                format: uuid
-                description: 题目ID
-              order_index:
-                type: integer
-                description: 在本测验中的顺序
-              points:
-                type: integer
-                description: 本题分值
-            required:
-              - question_id
         time_limit:
           type: integer
           description: "Time limit in seconds"
-          example: 300
-        created_by:
-          type: string
-          format: uuid
-          example: "550e8400-e29b-41d4-a716-446655440000"
-        created_at:
-          type: string
-          format: date-time
-          example: "2023-10-01T12:00:00Z"
-        updated_at:
-          type: string
-          format: date-time
-          example: "2023-10-01T12:00:00Z"
-        likes:
-          type: integer
-          description: "点赞数"
-        likeStatus:
-          type: integer
-          enum: [-1, 0, 1]
-          description: "点赞状态：-1踩, 0未操作, 1赞"
       required:
-        - id
         - public
         - title
-        - category
+        - categories
         - difficulty
-        - questions
-        - created_by
-        - created_at
-        - updated_at
+        - time_limit
 
-    Question:
+    ExamQuestion:
       type: object
       properties:
-        id:
+        question_id:
           type: string
           format: uuid
-          example: "550e8400-e29b-41d4-a716-446655440000"
+        order_index:
+          type: number
+        points:
+          type: number
+
+    Exam:
+      allOf:
+        - $ref: "#/components/schemas/ExamBase"
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            created_by:
+              type: string
+              format: uuid
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            likes_count:
+              type: integer
+              description: "点赞数"
+            like_status:
+              $ref: "#/components/schemas/LikeStatus"
+            questions:
+              type: array
+              items:
+                $ref: "#/components/schemas/ExamQuestion"
+          required:
+            - id
+            - create_at
+            - create_by
+            - updated_at
+            - likes_count
+            - like_status
+            - questions
+
+    CreateExamRequest:
+      allOf:
+        - $ref: "#/components/schemas/ExamBase"
+        - type: object
+          properties:
+            questions:
+              type: array
+              items:
+                $ref: "#/components/schemas/ExamQuestion"
+          required:
+            - questions
+
+    QuestionBase:
+      type: object
+      properties:
         public:
           type: boolean
           description: "是否公开可见"
-        solved:
-          type: boolean
-          description: "是否已经通过了"
-        likeStatus:
-          type: integer
-          enum: [1, 0, -1]
-          description: "点赞状态，1=已点赞，-1=已点踩，0=未操作"
         question_type:
           $ref: "#/components/schemas/QuestionType"
         category:
-          $ref: "#/components/schemas/QuestionCategory"
+          $ref: "#/components/schemas/Category"
         difficulty:
-          $ref: "#/components/schemas/QuestionDifficulty"
-        languages:
-          type: array
-          items:
-            type: string
-          example: ["en", "zh", "jp"]
-          description: 支持的多语言列表
+          $ref: "#/components/schemas/Difficulty"
         question_text:
-          type: string
+          $ref: "#/components/schemas/LocalizedText"
           example: "Which character is the Anemo Archon?"
-        options:
-          type: array
-          items:
-            $ref: "#/components/schemas/QuestionOption"
         explanation:
-          type: string
+          $ref: "#/components/schemas/LocalizedText"
           example: "Venti is the Anemo Archon, also known as Barbatos"
-        answer_count:
-          type: integer
-          example: 150
-          description: 总答题人数
-        correct_count:
-          type: integer
-          example: 100
-          description: 总答对人数
-        likes:
-          type: integer
-          example: 25
-          description: 点赞数
-        created_by:
-          type: string
-          format: uuid
-          example: "550e8400-e29b-41d4-a716-446655440000"
-        created_at:
-          type: string
-          format: date-time
-          example: "2023-10-01T12:00:00Z"
-      required:
-        - id
-        - public
-        - question_text
-        - question_type
-        - category
-        - difficulty
-        - options
-        - languages
-        - created_by
-        - created_at
 
-    QuestionOption:
+    Question:
+      allOf:
+        - $ref: "#/components/schemas/QuestionBase"
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            options:
+              type: array
+              items:
+                $ref: "#/components/schemas/QuestionOption"
+            solved:
+              type: boolean
+              description: "是否已经通过了"
+            like_status:
+              $ref: "#/components/schemas/LikeStatus"
+            answers_count:
+              type: integer
+              description: 总答题人数
+            correct_answers_count:
+              type: integer
+              description: 总答对人数
+            likes_count:
+              type: integer
+              description: 点赞数
+            created_by:
+              type: string
+              format: uuid
+            created_at:
+              type: string
+              format: date-time
+          required:
+            - id
+            - options
+            - solved
+            - like_status
+            - answer_count
+            - correct_count
+            - likes_count
+            - created_by
+            - created_at
+
+    CreateQuestionRequest:
+      allOf:
+        - $ref: "#/components/schemas/QuestionBase"
+        - type: object
+          properties:
+            options:
+              type: array
+              items:
+                $ref: "#/components/schemas/CreateQuestionOptionRequest"
+          required:
+            - options
+
+    QuestionOptionBase:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum: [text, image]
-          description: 选项类型
+        option_type:
+          $ref: "#/components/schemas/OptionType"
         text:
-          type: object
-          description: 选项文本
-          additionalProperties:
-            type: string
-        image:
+          $ref: "#/components/schemas/LocalizedText"
+        media_url:
           type: string
           format: uri
-          description: 选项图片URL
-        is_answer:
-          type: boolean
-          description: 是否为正确答案
-        count:
-          type: integer
-          description: 选中次数
       required:
-        - type
+        - option_type
 
-    QuestionWithAnswer:
-      type: object
-      properties:
-        public:
-          type: boolean
-        question_type:
-          $ref: "#/components/schemas/QuestionType"
-        category:
-          $ref: "#/components/schemas/QuestionCategory"
-        difficulty:
-          $ref: "#/components/schemas/QuestionDifficulty"
-        options:
-          type: array
-          items:
-            $ref: "#/components/schemas/QuestionOption"
-          description: 问题的选项
-        question_text:
-          type: object
-          description: 多语言题干
-          additionalProperties:
-            type: string
-        explanation:
-          type: object
-          description: 多语言解释
-          additionalProperties:
-            type: string
-      required:
-        [
-          "public",
-          "question_type",
-          "category",
-          "difficulty",
-          "question_text",
-          "options",
-          "translations",
-        ]
+    QuestionOption:
+      allOf:
+        - $ref: "#/components/schemas/QuestionOptionBase"
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            selected_count:
+              type: integer
+              description: 选中次数
+          required:
+            - id
+            - count
+
+    CreateQuestionOptionRequest:
+      allOf:
+        - $ref: "#/components/schemas/QuestionOptionBase"
+        - type: object
+          properties:
+            is_answer:
+              type: boolean
+              description: 是否为正确答案
+          required:
+            - is_answer
 
     QuestionType:
       type: string
@@ -1456,9 +1461,9 @@ components:
         - true_false
       example: single_choice
 
-    QuestionCategory:
+    Category:
       type: string
-      description: 题目分类
+      description: 分类
       enum:
         - character
         - weapon
@@ -1473,7 +1478,7 @@ components:
         - other
       example: character
 
-    QuestionDifficulty:
+    Difficulty:
       type: string
       description: 难度等级
       enum:
@@ -1482,26 +1487,61 @@ components:
         - hard
       example: medium
 
-    Vote:
+    QuestionSubmission:
+      allOf:
+        - $ref: "#/components/schemas/SubmissionBase"
+        - type: object
+          properties:
+            selected_option_ids:
+              type: array
+              items:
+                type: string
+                format: uuid
+          required:
+            - selected_option_ids
+
+    RecentSubmission:
+      allOf:
+        - $ref: "#/components/schemas/SubmissionBase"
+        - type: object
+          properties:
+            user:
+              $ref: "#/components/schemas/UserPublic"
+          required:
+            - user
+
+    SubmissionBase:
       type: object
       properties:
-        id:
+        is_correct:
+          type: boolean
+          description: 答案是否正确
+          example: true
+        time_spent:
+          type: integer
+          description: 答题用时（秒）
+          example: 30
+        submitted_at:
           type: string
-          format: uuid
+          format: date-time
+          description: 提交时间
+          example: "2023-10-01T12:00:00Z"
+      required:
+        - is_correct
+        - time_spent
+        - submitted_at
+
+    PollBase:
+      type: object
+      properties:
         public:
           type: boolean
         title:
-          type: object
-          description: 多语言标题
-          additionalProperties:
-            type: string
+          $ref: "#/components/schemas/LocalizedText"
         description:
-          type: object
-          description: 多语言描述
-          additionalProperties:
-            type: string
+          $ref: "#/components/schemas/LocalizedText"
         category:
-          $ref: "#/components/schemas/QuestionCategory"
+          $ref: "#/components/schemas/Category"
         tags:
           type: array
           items:
@@ -1512,199 +1552,110 @@ components:
         expire_at:
           type: string
           format: date-time
-        expired:
-          type: boolean
-          description: "投票是否已过期"
-        voted:
-          type: boolean
-          description: "当前用户是否已参与投票"
-        voted_options:
-          type: array
-          description: "当前用户已投票的选项及票数"
-          items:
-            $ref: "#/components/schemas/VoteSubmissionOption"
         votes_per_user:
           type: integer
-          default: 1
-          description: "每个用户最多可投票数"
         votes_per_option:
           type: integer
-          default: 1
-          description: "每个选项的最大可投票数，0表示无限制"
-        options:
-          type: array
-          items:
-            $ref: "#/components/schemas/VoteOption"
-        participants:
-          type: integer
-          description: "参与投票的用户数"
-        total_votes:
-          type: integer
-          description: "总投票数"
-        created_by:
-          type: string
-          format: uuid
-        created_at:
-          type: string
-          format: date-time
-        likes:
-          type: integer
-        likeStatus:
-          type: integer
-          enum: [-1, 0, 1]
-          description: "点赞状态：-1踩, 0未操作, 1赞"
       required:
-        - id
         - public
         - title
         - category
         - start_at
         - votes_per_user
         - votes_per_option
-        - options
-        - expired
-        - voted
-        - voted_options
-        - created_at
-        - created_by
 
-    VoteOption:
+    Poll:
+      allOf:
+        - $ref: "#/components/schemas/PollBase"
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            options:
+              type: array
+              items:
+                $ref: "#/components/schemas/PollOption"
+            participants_count:
+              type: integer
+              description: "参与投票的用户数"
+            total_votes_count:
+              type: integer
+              description: "总投票数"
+            likes_count:
+              type: integer
+            my_votes:
+              type: array
+              description: "当前用户已投票的选项及票数"
+              items:
+                $ref: "#/components/schemas/PollVote"
+            like_status:
+              $ref: "#/components/schemas/LikeStatus"
+          required:
+            - id
+            - options
+            - participants_count
+            - total_votes_count
+            - likes_count
+            - my_votes
+            - like_status
+
+    CreatePollRequest:
+      allOf:
+        - $ref: "#/components/schemas/PollBase"
+        - type: object
+          properties:
+            password:
+              type: string
+              description: "投票密码"
+            options:
+              type: array
+              items:
+                $ref: "#/components/schemas/PollOptionBase"
+          required:
+            - options
+
+    OptionType:
+      type: string
+      enum:
+        - text
+        - image
+        - music
+
+    PollOptionBase:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum: [text, image, music]
-          description: 选项类型（文本、图片、音乐）
+        option_type:
+          $ref: "#/components/schemas/OptionType"
         text:
-          type: object
           description: 选项文本
-          additionalProperties:
-            type: string
-        image_url:
-          type: string
-          format: uri
-          description: 选项图片URL
-        music_url:
-          type: string
-          format: uri
-          description: 选项音乐URL
+          $ref: "#/components/schemas/LocalizedText"
         description:
-          type: string
           description: 选项描述
-        votes:
-          type: integer
-          description: 获得的累计票数
+          $ref: "#/components/schemas/LocalizedText"
+        media_url:
+          type: string
+          format: uri
       required:
-        - type
+        - option_type
+        - text
 
-    VoteWithOption:
-      type: object
-      properties:
-        public:
-          type: boolean
-          description: "是否公开可见(需要密码才能参与投票)"
-        password:
-          type: string
-          description: "投票密码"
-        title:
-          type: object
-          description: 多语言标题
-          additionalProperties:
-            type: string
-        description:
-          type: object
-          description: 多语言描述
-          additionalProperties:
-            type: string
-        category:
-          $ref: "#/components/schemas/QuestionCategory"
-        tags:
-          type: array
-          items:
-            type: string
-        start_at:
-          type: string
-          format: date-time
-        expire_at:
-          type: string
-          format: date-time
-        votes_per_user:
-          type: integer
-          default: 1
-          description: "每个用户最多可投票数"
-        votes_per_option:
-          type: integer
-          default: 1
-          description: "每个选项的最大可投票数，0表示无限制"
-        options:
-          type: array
-          items:
-            $ref: "#/components/schemas/VoteOption"
-      required:
-        - public
-        - title
-        - category
-        - start_at
-        - votes_per_user
-        - options
+    PollOption:
+      allOf:
+        - $ref: "#/components/schemas/PollOptionBase"
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            votes_count:
+              type: integer
+              description: 获得的累计票数
+          required:
+            - id
+            - type
 
-    MySubmission:
-      type: object
-      properties:
-        is_correct:
-          type: boolean
-          description: 答案是否正确
-          example: true
-        selected_option_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-        time_spent:
-          type: integer
-          description: 答题用时（秒）
-          example: 30
-        submitted_at:
-          type: string
-          format: date-time
-          description: 提交时间
-          example: "2023-10-01T12:00:00Z"
-      required:
-        - is_correct
-        - selected_option_ids
-        - time_spent
-        - submitted_at
-
-    RecentSubmission:
-      type: object
-      properties:
-        user_name:
-          type: string
-          description: 提交用户昵称
-          example: "Traveler"
-        is_correct:
-          type: boolean
-          description: 答案是否正确
-          example: true
-        time_spent:
-          type: integer
-          description: 答题用时（秒）
-          example: 30
-        submitted_at:
-          type: string
-          format: date-time
-          description: 提交时间
-          example: "2023-10-01T12:00:00Z"
-      required:
-        - is_correct
-        - time_spent
-        - submitted_at
-        - user_name
-
-    VoteSubmissionOption:
+    PollVote:
       type: object
       description: 投票时单个选项的投票信息
       properties:
