@@ -1160,7 +1160,7 @@ components:
         email_public:
           type: boolean
           example: false
-        sexuality:
+        gender:
           type: string
           enum: ["male", "female", "other"]
         bio:
@@ -1213,6 +1213,11 @@ components:
         - nickname
         - avatar_url
         - country
+        - email
+        - email_verified
+        - email_public
+        - gender
+        - bio
         - total_answers
         - correct_answers
         - questions_created
