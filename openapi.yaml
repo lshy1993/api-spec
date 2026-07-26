@@ -1266,7 +1266,7 @@ components:
 
     LikeStatus:
       type: integer
-      enum: [-1, 0, -1]
+      enum: [-1, 0, 1]
       description: "点赞状态：-1踩, 0未操作, 1赞"
 
     ExamBase:
@@ -1334,8 +1334,8 @@ components:
                 $ref: "#/components/schemas/ExamQuestion"
           required:
             - id
-            - create_at
-            - create_by
+            - created_at
+            - created_by
             - updated_at
             - likes_count
             - like_status
@@ -1415,8 +1415,8 @@ components:
             - options
             - solved
             - like_status
-            - answer_count
-            - correct_count
+            - answers_count
+            - correct_answers_count
             - likes_count
             - created_by
             - created_at
@@ -1462,7 +1462,7 @@ components:
               description: 是否为正确答案
           required:
             - id
-            - count
+            - selected_count
 
     CreateQuestionOptionRequest:
       allOf:
@@ -1692,7 +1692,10 @@ components:
               description: 获得的累计票数
           required:
             - id
-            - type
+            - votes_count
+
+    CreatePollOptionRequest:
+      $ref: "#/components/schemas/PollOptionBase"
 
     PollVote:
       type: object
