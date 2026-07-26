@@ -1148,8 +1148,7 @@ components:
           type: string
           format: email
         gender:
-          type: string
-          enum: [unknown, male, female, other]
+          $ref: "#/components/schemas/Gender"
         country:
           type: string
           example: "CN"
@@ -1510,6 +1509,10 @@ components:
         - medium
         - hard
       example: medium
+
+    Gender:
+      type: string
+      enum: [unknown, male, female, other]
 
     QuestionSubmission:
       allOf:
