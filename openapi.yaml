@@ -398,9 +398,17 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Poll"
+                type: object
+                properties:
+                  polls:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Poll"
+                  total:
+                    type: integer
+                required:
+                  - polls
+                  - total
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -436,9 +444,17 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Question"
+                type: object
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Question"
+                  total:
+                    type: integer
+                required:
+                  - questions
+                  - total
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
